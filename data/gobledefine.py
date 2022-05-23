@@ -9,4 +9,4 @@ AUTHOR_EMAIL = "593885981@qq.com"
 
 MOVIE_DB = r"E:\owner\recommdation\database\movie.db"
 
-COLLECT_NUMBER = 10
+COLLECT_NUMBER = 100

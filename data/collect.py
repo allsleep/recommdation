@@ -85,23 +85,26 @@ class Collect:
         _page: Page = self.browser_context.new_page()
         movies = {}
         for url in movies_url:
-            _page.goto(url)
-            movie_name = _page.query_selector("//h1").inner_text()
-            more_button = "//a[text()='更多...']"
-            if _page.is_visible(more_button):
-                _page.click(more_button)
-            movie_infos_str = _page.query_selector("//div[@id='info']").inner_text()
-            movie_infos = movie_infos_str.split('\n')
-            temp = {}
-            for item in movie_infos[:-1]:
-                _item = item.split(':')
-                key = _item[0]
-                value = [v.strip() for v in _item[1].split('/')]
-                temp[key] = value
-            self.progress_bar.index += 1
-            review = _page.query_selector("//div[@id='link-report']").inner_text().strip()
-            temp['review'] = review
-            movies[movie_name] = temp
+            try:
+                _page.goto(url)
+                movie_name = _page.query_selector("//h1").inner_text()
+                more_button = "//a[text()='更多...']"
+                if _page.is_visible(more_button):
+                    _page.click(more_button)
+                movie_infos_str = _page.query_selector("//div[@id='info']").inner_text()
+                movie_infos = movie_infos_str.split('\n')
+                temp = {}
+                for item in movie_infos[:-1]:
+                    _item = item.split(':')
+                    key = _item[0]
+                    value = [v.strip() for v in _item[1].split('/')]
+                    temp[key] = value
+                self.progress_bar.index += 1
+                review = _page.query_selector("//div[@id='link-report']").inner_text().strip()
+                temp['review'] = review
+                movies[movie_name] = temp
+            except Exception as e:
+                LOG.debug(e)
         return movies
 
     @staticmethod

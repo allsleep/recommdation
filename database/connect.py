@@ -25,9 +25,16 @@ def db_try_wrapper(cursor, sql):
         LOG.error('OperationalError during db operation:{}'.format(e))
         if str(e).startswith("no such table:"):
             restore_db(cursor)
-            return cursor.execute(sql)
+            try:
+                return cursor.execute(sql)
+            except Exception as e:
+                LOG.error(f"Exception during db operation: {e}")
     except Exception as e:
         LOG.error(f"Exception during db operation: {e}")
+
+
+def v_str(v):
+    return f"\"{str(v)}\""
 
 
 def insert_movie_table(db_path, movie: dict):
@@ -36,8 +43,14 @@ def insert_movie_table(db_path, movie: dict):
         cursor = con.cursor()
         for key, value in movie.items():
             if judge_move_exist(key):
-                sql = f"INSERT INTO t_movie (name, review) VALUES(\"{key}\", \"{value['review']}\");"
-                db_try_wrapper(cursor, sql)
+                try:
+                    sql = f"INSERT INTO t_movie (name, director, screenwriter, performer, country, language, data, alias, review) " \
+                      f"VALUES({v_str(key)}, {v_str(value['导演'])}, {v_str(value['编剧'])},{v_str(value['主演'])}," \
+                      f"{v_str(value['制片国家/地区'])},{v_str(value['语言'])}, {v_str(value['上映日期'])}, " \
+                      f"{v_str(value['又名'])}, {v_str(value['review'])});"
+                    db_try_wrapper(cursor, sql)
+                except:
+                    continue
         con.commit()
         cursor.close()
         con.close()
