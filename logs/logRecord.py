@@ -10,8 +10,8 @@ from data.gobledefine import LOG_DIR
 传入mess写入日志文件(每天生成一个日志文件)
 共warning,info,error三个等级
 """
-# Service、EDST、SRT
-# NAMEHEADER = 'Service'
+
+
 def singleton(cls):
     instances = {}
 
@@ -22,6 +22,7 @@ def singleton(cls):
 
     return _singleton
 
+
 @singleton
 class Log:
     def __init__(self):
@@ -30,15 +31,13 @@ class Log:
         if not os.path.exists(LOG_DIR):
             os.makedirs(LOG_DIR)
         self.logger.setLevel(INFO)
-        formatter = Formatter(
-            '%(asctime)s - [%(process)d-%(threadName)s]-%(filename)s[line:%(lineno)d]-[%(levelname)s]: %(message)s')
+        formatter = Formatter('%(asctime)s - [%(process)d-%(threadName)s]-%(filename)s[line:%(lineno)d]-[%(levelname)s]: %(message)s')
         if not self.logger.handlers:
             console_handler = StreamHandler()
             console_handler.setFormatter(formatter)
             console_handler.setLevel(WARN)
             self.logger.addHandler(console_handler)
-            file_handler = handlers.RotatingFileHandler(name, maxBytes=10*1024*1024, backupCount=5,
-                                                                encoding="utf-8")
+            file_handler = handlers.RotatingFileHandler(name, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8")
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 
@@ -57,11 +56,9 @@ class Log:
     def get_logger(self):
         return self.logger
 
+
 LOG = Log().get_logger()
 
 if __name__ == '__main__':
     log = Log()
     log.info('test')
-
-
-

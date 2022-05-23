@@ -28,6 +28,9 @@ class ProgressBar(Thread):
                 if cur != self.index:
                     bar()
                     cur = self.index
+                time.sleep(0.5)
+            if cur != self.index:
+                bar()
 
     def stop(self):
         self.is_running = False
