@@ -8,3 +8,6 @@
 /dataSources.local.xml
 
 /.idea
+
+*.log
+/database/movie.db
