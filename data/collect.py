@@ -5,9 +5,10 @@ import json
 
 from playwright.sync_api import sync_playwright, BrowserContext, Page
 
-from data.gobledefine import CHROME_PATH, MOVIE_DB
+from data.gobledefine import CHROME_PATH, MOVIE_DB, COLLECT_NUMBER
 from logs.logRecord import LOG
 import database.connect as db
+
 headless = False
 
 
@@ -33,15 +34,18 @@ class Collect:
         self.page.wait_for_load_state("networkidle")
         douban_all_div = '//*[@id="app"]/div/div[1]/div[3]/a'
         try:
+            for n in range(int(COLLECT_NUMBER / 20)):
+                self.page.wait_for_timeout(1000)
+                self.page.click("//a[text()='加载更多']")
+                self.page.wait_for_load_state("networkidle")
             movies: list = self.page.query_selector_all(douban_all_div)
             movies_url = []
             i = 0
             for item in movies:
                 movies_url.append(str(item.get_property("href")))
-                break
-            movies_info = self.get_movie_info(movies_url)
-            # print(json.dumps(movies_info, ensure_ascii=False))
-            db.insert_movie_table(MOVIE_DB, movies_info)
+            print(len(movies_url))
+            # movies_info = self.get_movie_info(movies_url)
+            # db.insert_movie_table(MOVIE_DB, movies_info)
         except Exception as e:
             LOG.error(f"{e}")
 
@@ -68,10 +72,10 @@ class Collect:
         return movies
 
     @staticmethod
-    def test():
+    def main():
         c = Collect(CHROME_PATH)
         c.run()
 
 
 if __name__ == '__main__':
-    Collect.test()
+    Collect.main()
