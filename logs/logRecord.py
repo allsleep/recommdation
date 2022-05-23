@@ -26,7 +26,7 @@ def singleton(cls):
 class Log:
     def __init__(self):
         self.logger = getLogger()
-        name = LOG_DIR + 'collect_movie_log' + time.strftime('_%Y-%m-%d', time.localtime(time.time())) + '.log'
+        name = LOG_DIR + '\collect_movie_log' + time.strftime('_%Y-%m-%d', time.localtime(time.time())) + '.log'
         if not os.path.exists(LOG_DIR):
             os.makedirs(LOG_DIR)
         self.logger.setLevel(INFO)

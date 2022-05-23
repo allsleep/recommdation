@@ -31,15 +31,18 @@ def db_try_wrapper(cursor, sql):
 
 
 def insert_movie_table(db_path, movie: dict):
-    con = sqlite3.connect(db_path)
-    cursor = con.cursor()
-    for key, value in movie.items():
-        if judge_move_exist(key):
-            sql = f"INSERT INTO t_movie (name, review) VALUES(\"{key}\", \"{value['review']}\");"
-            db_try_wrapper(cursor, sql)
-    con.commit()
-    cursor.close()
-    con.close()
+    try:
+        con = sqlite3.connect(db_path)
+        cursor = con.cursor()
+        for key, value in movie.items():
+            if judge_move_exist(key):
+                sql = f"INSERT INTO t_movie (name, review) VALUES(\"{key}\", \"{value['review']}\");"
+                db_try_wrapper(cursor, sql)
+        con.commit()
+        cursor.close()
+        con.close()
+    except Exception as e:
+        LOG.error(e)
 
 
 def judge_move_exist(name, db_path=MOVIE_DB) -> bool:
