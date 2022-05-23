@@ -43,7 +43,7 @@ class Collect:
         self.browser_context = None
         self.page = None
         self.progress_bar = ProgressBar()
-        self.web_url = "https://movie.douban.com/tag/#/"
+        self.web_url = "https://movie.douban.com/tag/#/?sort=T&range=0,10&tags="
 
     def run(self):
         args = ["--no-sandbox", "--disable-infobars", "--lang=zh-CN", "--start-maximized"]
@@ -56,7 +56,7 @@ class Collect:
     def start(self):
         print("Initializing data collection")
         self.page: Page = self.browser_context.new_page()
-        self.page.goto(self.web_url)
+        self.page.goto(self.web_url, timeout=10000)
         self.page.wait_for_load_state("networkidle")
         douban_all_div = '//*[@id="app"]/div/div[1]/div[3]/a'
         try:
@@ -100,6 +100,8 @@ class Collect:
                     value = [v.strip() for v in _item[1].split('/')]
                     temp[key] = value
                 self.progress_bar.index += 1
+                if self.progress_bar.index % 50 == 0:
+                    _page.wait_for_timeout(3000)
                 review = _page.query_selector("//div[@id='link-report']").inner_text().strip()
                 temp['review'] = review
                 movies[movie_name] = temp

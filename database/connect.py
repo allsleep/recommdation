@@ -49,7 +49,7 @@ def insert_movie_table(db_path, movie: dict):
                       f"{v_str(value['制片国家/地区'])},{v_str(value['语言'])}, {v_str(value['上映日期'])}, " \
                       f"{v_str(value['又名'])}, {v_str(value['review'])});"
                     db_try_wrapper(cursor, sql)
-                except:
+                except Exception as e:
                     continue
         con.commit()
         cursor.close()
